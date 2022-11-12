@@ -13,8 +13,9 @@ public class PasswordValidator : IPasswordValidator
     /// <summary>
     /// Constructions a new instance of <see cref="PasswordValidator{TUser}"/>.
     /// </summary>
+    /// <param name="options">password options</param>
     /// <param name="errors">The <see cref="IdentityErrorDescriber"/> to retrieve error text from.</param>
-    public PasswordValidator(PasswordOptions options, IdentityErrorDescriber errors = null)
+    public PasswordValidator(PasswordOptions options, IdentityErrorDescriber? errors = null)
     {
         _options = options;
         Describer = errors ?? new IdentityErrorDescriber();

@@ -1,6 +1,8 @@
 using System;
 using Identity.Protocol.Api;
 
+#pragma warning disable CS8618
+
 namespace Identity.Protocol.Rpc
 {
     [Serializable]
@@ -10,5 +12,4 @@ namespace Identity.Protocol.Rpc
 
         public string Email { get; set; }
     }
-
 }

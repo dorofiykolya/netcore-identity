@@ -29,7 +29,7 @@ public static class UserDocumentExtensions
         claims.Add(new Claim(UserClaims.TypeName, document.Name ?? ""));
         foreach (var identity in document.Identities)
         {
-            claims.Add(new Claim($"{UserClaims.TypeIdentities}/{identity}", identity.ToString()));
+            claims.Add(new Claim($"{UserClaims.TypeIdentities}/{identity}", identity.ToString() ?? string.Empty));
         }
         foreach (var role in document.Roles)
         {
@@ -38,7 +38,7 @@ public static class UserDocumentExtensions
         return claims.ToArray();
     }
 
-    public static async Task<UserDocument?> FindByEmailAsync(this IMongoRepository<UserDocument?> repository, string email)
+    public static async Task<UserDocument?> FindByEmailAsync(this IMongoRepository<UserDocument> repository, string email)
     {
         var user = await repository.FindOneAsync(x =>
             x.Identities.Any(i =>
@@ -48,7 +48,7 @@ public static class UserDocumentExtensions
         return user;
     }
 
-    public static async Task<UserDocument?> FindByGoogleAsync(this IMongoRepository<UserDocument?> repository, string subject)
+    public static async Task<UserDocument?> FindByGoogleAsync(this IMongoRepository<UserDocument> repository, string subject)
     {
         var user = await repository.FindOneAsync(x =>
             x.Identities.Any(i =>
@@ -58,7 +58,7 @@ public static class UserDocumentExtensions
         return user;
     }
 
-    public static async Task<UserDocument?> FindByGuestAsync(this IMongoRepository<UserDocument?> repository, string subject)
+    public static async Task<UserDocument?> FindByGuestAsync(this IMongoRepository<UserDocument> repository, string subject)
     {
         var user = await repository.FindOneAsync(x =>
             x.Identities.Any(i =>

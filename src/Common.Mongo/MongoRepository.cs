@@ -8,7 +8,7 @@ using MongoDB.Driver;
 namespace Common.Mongo;
 
 public class MongoRepository<TDocument> : IMongoRepository<TDocument>
-        where TDocument : IMongoDocument?
+    where TDocument : IMongoDocument
 {
     public ILogger<TDocument> Logger { get; }
     public Type DocumentType => typeof(TDocument);
@@ -35,7 +35,7 @@ public class MongoRepository<TDocument> : IMongoRepository<TDocument>
         }
         if (customIndexBuilder != null)
         {
-            var task = customIndexBuilder!.BuildAsync(this);
+            var task = customIndexBuilder.BuildAsync(this);
             task.Wait();
         }
     }
@@ -46,14 +46,14 @@ public class MongoRepository<TDocument> : IMongoRepository<TDocument>
     }
 
     public virtual IEnumerable<TDocument> FilterBy(
-            Expression<Func<TDocument, bool>> filterExpression)
+        Expression<Func<TDocument, bool>> filterExpression)
     {
         return Collection.Find(filterExpression).ToEnumerable();
     }
 
     public virtual IEnumerable<TProjected> FilterBy<TProjected>(
-            Expression<Func<TDocument, bool>> filterExpression,
-            Expression<Func<TDocument, TProjected>> projectionExpression)
+        Expression<Func<TDocument, bool>> filterExpression,
+        Expression<Func<TDocument, TProjected>> projectionExpression)
     {
         return Collection.Find(filterExpression).Project(projectionExpression).ToEnumerable();
     }
@@ -63,41 +63,35 @@ public class MongoRepository<TDocument> : IMongoRepository<TDocument>
         return Collection.Find(filterExpression).FirstOrDefault();
     }
 
-    public virtual Task<TDocument> FindOneAsync(Expression<Func<TDocument, bool>> filterExpression)
+    public virtual async Task<TDocument?> FindOneAsync(Expression<Func<TDocument, bool>> filterExpression)
     {
-        return Task.Run(() => Collection.Find(filterExpression).FirstOrDefaultAsync());
+        return (await Collection.FindAsync(filterExpression)).FirstOrDefault();
     }
 
     public virtual TDocument FindById(string id)
     {
         var objectId = new ObjectId(id);
-        var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, objectId);
+        var filter = Builders<TDocument>.Filter.Eq(doc => doc!.Id, objectId);
         return Collection.Find(filter).SingleOrDefault();
     }
-    
+
     public virtual TDocument FindById(ObjectId id)
     {
-        var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, id);
+        var filter = Builders<TDocument>.Filter.Eq(doc => doc!.Id, id);
         return Collection.Find(filter).SingleOrDefault();
     }
 
-    public virtual Task<TDocument> FindByIdAsync(string id)
+    public virtual async Task<TDocument?> FindByIdAsync(string id)
     {
-        return Task.Run(() =>
-        {
-            var objectId = new ObjectId(id);
-            var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, objectId);
-            return Collection.Find(filter).SingleOrDefaultAsync();
-        });
+        var objectId = new ObjectId(id);
+        var filter = Builders<TDocument>.Filter.Eq(doc => doc!.Id, objectId);
+        return (await Collection.FindAsync(filter)).SingleOrDefault();
     }
 
-    public virtual Task<TDocument> FindByIdAsync(ObjectId id)
+    public virtual async Task<TDocument?> FindByIdAsync(ObjectId id)
     {
-        return Task.Run(() =>
-        {
-            var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, id);
-            return Collection.Find(filter).SingleOrDefaultAsync();
-        });
+        var filter = Builders<TDocument>.Filter.Eq(doc => doc!.Id, id);
+        return (await Collection.FindAsync(filter)).SingleOrDefault();
     }
 
     public virtual void InsertOne(TDocument document)
@@ -123,13 +117,13 @@ public class MongoRepository<TDocument> : IMongoRepository<TDocument>
 
     public void ReplaceOne(TDocument document)
     {
-        var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, document.Id);
+        var filter = Builders<TDocument>.Filter.Eq(doc => doc!.Id, document.Id);
         Collection.FindOneAndReplace(filter, document);
     }
 
     public virtual async Task ReplaceOneAsync(TDocument document)
     {
-        var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, document.Id);
+        var filter = Builders<TDocument>.Filter.Eq(doc => doc!.Id, document.Id);
         await Collection.FindOneAndReplaceAsync(filter, document);
     }
 
@@ -146,15 +140,15 @@ public class MongoRepository<TDocument> : IMongoRepository<TDocument>
     public void DeleteById(string id)
     {
         var objectId = new ObjectId(id);
-        var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, objectId);
+        var filter = Builders<TDocument>.Filter.Eq(doc => doc!.Id, objectId);
         Collection.FindOneAndDelete(filter);
     }
-    
+
     public Task DeleteByIdAsync(ObjectId id)
     {
         return Task.Run(() =>
         {
-            var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, id);
+            var filter = Builders<TDocument>.Filter.Eq(doc => doc!.Id, id);
             Collection.FindOneAndDeleteAsync(filter);
         });
     }
@@ -164,7 +158,7 @@ public class MongoRepository<TDocument> : IMongoRepository<TDocument>
         return Task.Run(() =>
         {
             var objectId = new ObjectId(id);
-            var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, objectId);
+            var filter = Builders<TDocument>.Filter.Eq(doc => doc!.Id, objectId);
             Collection.FindOneAndDeleteAsync(filter);
         });
     }

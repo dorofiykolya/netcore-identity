@@ -1,7 +1,6 @@
 using System.Net;
 using System.Threading.Tasks;
 using Common.Mongo;
-using Common.Redis;
 using Identity.Protocol.Rpc;
 using Identity.Repositories;
 using Identity.Repositories.Caches;
@@ -15,17 +14,14 @@ namespace Identity.Controllers;
 public class SignInByGuestController : ControllerBase
 {
     private readonly IUserJwtTokenRepository _userJwt;
-    private readonly IMongoRepository<UserDocument?> _userRepository;
-    private readonly ICacheRepository<UserTokenCache> _tokenCache;
+    private readonly IMongoRepository<UserDocument> _userRepository;
 
     public SignInByGuestController(
-        IMongoRepository<UserDocument?> userRepository,
-        ICacheRepository<UserTokenCache> tokenCache,
+        IMongoRepository<UserDocument> userRepository,
         IUserJwtTokenRepository userJwt
     )
     {
         _userRepository = userRepository;
-        _tokenCache = tokenCache;
         _userJwt = userJwt;
     }
 

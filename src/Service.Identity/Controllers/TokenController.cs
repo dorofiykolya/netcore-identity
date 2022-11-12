@@ -38,9 +38,9 @@ public class TokenController : ControllerBase
     [Route(TokenValidateRequest.Route)]
     [ProducesResponseType(typeof(TokenValidateResponse), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(StatusCodeResult), (int)HttpStatusCode.BadRequest)]
-    public async Task<IActionResult> Validate(TokenValidateRequest request)
+    public Task<IActionResult> Validate(TokenValidateRequest request)
     {
-        return Ok();
+        return Task.FromResult<IActionResult>(Ok());
     }
 
     [AllowAnonymous]

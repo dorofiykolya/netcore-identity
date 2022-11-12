@@ -2,10 +2,8 @@
 
 public class JwtOptions
 {
-    public string SecurityKey { get; set; }
-    public string Issuer { get; set; }
-
-    public string Audience { get; set; }
-
-    public TimeSpan Expire { get; set; }
+    public string SecurityKey { get; set; } = "securityKey";
+    public string Issuer { get; set; } = "issuer";
+    public string Audience { get; set; } = "audience";
+    public TimeSpan Expire { get; set; } = TimeSpan.FromMinutes(1);
 }

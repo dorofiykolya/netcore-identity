@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Common.Mongo;
 using Identity.Protocol.Rpc;
 using Identity.Repositories;
-using Identity.Services;
 using Identity.Services.Emails;
 using Identity.Services.Identities;
 using Identity.Services.Passwords;
@@ -15,13 +14,13 @@ namespace Identity.Controllers;
 [ApiController]
 public class UserEmailController : ControllerBase
 {
-    private readonly IMongoRepository<UserDocument?> _userRepository;
+    private readonly IMongoRepository<UserDocument> _userRepository;
     private readonly IPasswordValidator _passwordValidator;
     private readonly IEmailSender _emailSender;
     private readonly IPasswordGenerator _passwordGenerator;
 
     public UserEmailController(
-        IMongoRepository<UserDocument?> userRepository,
+        IMongoRepository<UserDocument> userRepository,
         IPasswordValidator passwordValidator,
         IEmailSender emailSender,
         IPasswordGenerator passwordGenerator

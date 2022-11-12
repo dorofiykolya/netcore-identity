@@ -67,8 +67,8 @@ public class ControllerInspector
 
     public class RouteInfo
     {
-        public string Path { get; set; }
-        public Type RequestType { get; set; }
-        public Type ResponseType { get; set; }
+        public string Path { get; set; } = null!;
+        public Type RequestType { get; set; } = null!;
+        public Type ResponseType { get; set; } = null!;
     }
 }

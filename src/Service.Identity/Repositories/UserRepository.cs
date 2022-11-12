@@ -5,7 +5,7 @@ namespace Identity.Repositories;
 
 public static class UserRepositoryExtensions
 {
-    public static async Task<UserDocument> CreateUser(this IMongoRepository<UserDocument?> repository)
+    public static async Task<UserDocument> CreateUser(this IMongoRepository<UserDocument> repository)
     {
         var user = new UserDocument();
         await repository.InsertOneAsync(user);

@@ -16,13 +16,13 @@ namespace Identity.Controllers;
 [ApiController]
 public class SignUpByEmailController : ControllerBase
 {
-    private readonly IMongoRepository<UserDocument?> _userRepository;
+    private readonly IMongoRepository<UserDocument> _userRepository;
     private readonly IEmailValidator _emailValidator;
     private readonly IPasswordValidator _passwordValidator;
     private readonly IEmailSender _emailSender;
 
     public SignUpByEmailController(
-        IMongoRepository<UserDocument?> userRepository,
+        IMongoRepository<UserDocument> userRepository,
         IEmailSender emailSender,
         IEmailValidator emailValidator,
         IPasswordValidator passwordValidator
@@ -134,7 +134,7 @@ public class SignUpByEmailController : ControllerBase
             {
                 throw IdentityErrorCode.EmailInvalidCodeRegisterAgain.Exception();
             }
-            
+
             await _userRepository.ReplaceOneAsync(user);
 
             throw IdentityErrorCode.EmailInvalidCode.Exception();

@@ -28,9 +28,13 @@ public class JwtValidatorMiddleware
         if (context.User.Identity?.IsAuthenticated ?? false)
         {
             var token = GetAuthorizationToken(context.Request.Headers);
+            if (token == null)
+            {
+                throw IdentityErrorCode.Unauthorized.Exception();
+            }
             var info = jwtGenerator.Parse(token);
             var userId = info.Claims.Id();
-            
+
             var user = await tokenRepository.Collection.FindByIdAsync(userId);
             if (user == null || user.AccessToken != token)
             {
@@ -41,7 +45,7 @@ public class JwtValidatorMiddleware
         await _next(context);
     }
 
-    private static string GetAuthorizationToken(IHeaderDictionary headers)
+    private static string? GetAuthorizationToken(IHeaderDictionary headers)
     {
         if (headers.TryGetValue(HeaderNames.Authorization, out var authorization))
         {

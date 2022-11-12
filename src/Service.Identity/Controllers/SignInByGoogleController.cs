@@ -15,12 +15,12 @@ namespace Identity.Controllers;
 [ApiController]
 public class SignInByGoogleController : ControllerBase
 {
-    private readonly IMongoRepository<UserDocument?> _userRepository;
+    private readonly IMongoRepository<UserDocument> _userRepository;
     private readonly ILogger<SignInByGoogleController> _logger;
     private readonly IUserJwtTokenRepository _userJwt;
 
     public SignInByGoogleController(
-        IMongoRepository<UserDocument?> userRepository,
+        IMongoRepository<UserDocument> userRepository,
         ILogger<SignInByGoogleController> logger,
         IUserJwtTokenRepository userJwt
     )
@@ -68,7 +68,7 @@ public class SignInByGoogleController : ControllerBase
         }
         catch (InvalidJwtException exception)
         {
-            _logger.LogError(exception, exception.Message);
+            _logger.LogError(exception, "google payload exception");
             throw IdentityErrorCode.GoogleJwtError.Exception();
         }
         return BadRequest();

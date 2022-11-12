@@ -42,7 +42,7 @@ public class UserInfoController : ControllerBase
             User = new UserDto
             {
                 Id = user.Id.ToString(),
-                Name = user.Name,
+                Name = user.Name ?? "",
                 Roles = user.Roles.Select(r => new RoleDto
                 {
                     Id = r.Id,

@@ -1,11 +1,8 @@
 using System;
-using System.Reflection;
 using System.Text;
 using Common.Jwt;
 using Common.Mongo;
 using Common.Redis;
-using Identity;
-using Identity.Controllers;
 using Identity.Repositories.Caches;
 using Identity.Services.Emails;
 using Identity.Services.Identities;
@@ -17,11 +14,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-
-foreach (var routeInfo in ControllerInspector.Inspect(Assembly.GetAssembly(typeof(DeleteUserController))))
-{
-    Console.WriteLine($"{routeInfo.Path} = {routeInfo.RequestType.Name}:{routeInfo.ResponseType.Name}");
-}
 
 var builder = WebApplication.CreateBuilder(args);
 

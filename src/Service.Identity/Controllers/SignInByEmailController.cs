@@ -15,12 +15,12 @@ namespace Identity.Controllers;
 [ApiController]
 public class SignInByEmailController : ControllerBase
 {
-    private readonly IMongoRepository<UserDocument?> _userRepository;
+    private readonly IMongoRepository<UserDocument> _userRepository;
     private readonly IUserJwtTokenRepository _userJwt;
     private readonly IEmailValidator _emailValidator;
 
     public SignInByEmailController(
-        IMongoRepository<UserDocument?> userRepository,
+        IMongoRepository<UserDocument> userRepository,
         IUserJwtTokenRepository userJwt,
         IEmailValidator emailValidator
     )
