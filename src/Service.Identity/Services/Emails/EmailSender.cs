@@ -8,24 +8,24 @@ using Microsoft.Extensions.Logging;
 
 namespace Identity.Services.Emails;
 
-public class EmailSender : IEmailSender
+public class Sender : IEmailSender
 {
     private readonly EmailOptions _options;
-    private readonly ILogger<EmailSender> _logger;
-    public EmailSender(EmailOptions options, ILogger<EmailSender> logger)
+    private readonly ILogger<Sender> _logger;
+    public Sender(EmailOptions options, ILogger<Sender> logger)
     {
         _options = options;
         _logger = logger;
     }
-    
-    public async Task SendAsync(string body, string to, string subject)
+
+    public async Task SendAsync(string htmlBody, string mailTo, string subject)
     {
         MailMessage mailMessage = new MailMessage();
         mailMessage.IsBodyHtml = true;
         mailMessage.From = new MailAddress(_options.From, _options.FromName);
-        mailMessage.To.Add(new MailAddress(to));
+        mailMessage.To.Add(new MailAddress(mailTo));
         mailMessage.Subject = subject;
-        mailMessage.Body = body;
+        mailMessage.Body = htmlBody;
 
         if (!string.IsNullOrWhiteSpace(_options.ConfigSet))
         {
@@ -42,9 +42,9 @@ public class EmailSender : IEmailSender
 
             try
             {
-                _logger.LogInformation("Attempting to send email {To}", to);
+                _logger.LogInformation("Attempting to send email {To}", mailTo);
                 await client.SendMailAsync(mailMessage);
-                _logger.LogInformation("Email sent! {To}", to);
+                _logger.LogInformation("Email sent! {To}", mailTo);
             }
             catch (Exception ex)
             {
@@ -55,11 +55,11 @@ public class EmailSender : IEmailSender
     }
 }
 
-public static class EmailSenderExtensions
+public static class SenderExtensions
 {
     public static void AddEmailSender(this IServiceCollection services, IConfigurationSection section)
     {
         services.AddSingleton<EmailOptions>(_ => section.Get<EmailOptions>());
-        services.AddScoped<IEmailSender, EmailSender>();
+        services.AddScoped<IEmailSender, Sender>();
     }
 }
