@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <UseAppHost>false</UseAppHost>
+        <Nullable>enable</Nullable>
+        <UserSecretsId>aspnet-Identity-AEAFF0BC-B3F6-4655-8A85-F0AB17DCAA75</UserSecretsId>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <RootNamespace>Identity</RootNamespace>
+        <LangVersion>10</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Google.Apis.Auth" Version="1.57.0" />
+        <PackageReference Include="Google.Apis.Auth.Mvc" Version="1.57.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="6.0.10" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.7" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.7" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.1" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
+        <PackageReference Include="Microsoft.Identity.Web" Version="1.16.0" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.25.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Common.Jwt\Common.Jwt.csproj" />
+        <ProjectReference Include="..\Common.Mongo\Common.Mongo.csproj" />
+        <ProjectReference Include="..\Common.Redis\Common.Redis.csproj" />
+        <ProjectReference Include="..\Protocol\Protocol.csproj" />
+    </ItemGroup>
+
+
+</Project>

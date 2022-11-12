@@ -1,0 +1,70 @@
+
+[*.{c,c++,cc,cginc,compute,cp,cpp,cu,cuh,cxx,fx,fxh,h,hh,hlsl,hlsli,hlslinc,hpp,hxx,inc,inl,ino,ipp,mpp,mq4,mq5,mqh,tpp,usf,ush}]
+indent_style = tab
+indent_size = tab
+tab_width = 4
+
+[*.cs]
+indent_style = space
+indent_size = 4
+tab_width = 4
+
+[*]
+
+# Microsoft .NET properties
+csharp_indent_braces = false
+csharp_new_line_before_members_in_object_initializers = false
+csharp_new_line_before_open_brace = anonymous_methods,anonymous_types,control_blocks,events,indexers,lambdas,local_functions,methods,object_collection_array_initalizers,properties,types
+csharp_preferred_modifier_order = private, protected, public, internal, sealed, static, unsafe, abstract, override, readonly, virtual, extern, new, volatile, async, required:suggestion
+csharp_preserve_single_line_blocks = true
+csharp_style_var_for_built_in_types = false:suggestion
+
+# ReSharper properties
+resharper_accessor_declaration_braces = end_of_line_no_space
+resharper_align_multiple_declaration = true
+resharper_allow_comment_after_lbrace = true
+resharper_arguments_skip_single = true
+resharper_blank_lines_after_start_comment = 0
+resharper_blank_lines_around_auto_property = 0
+resharper_blank_lines_around_single_line_type = 0
+resharper_braces_for_for = not_required
+resharper_braces_for_using = required_for_multiline
+resharper_braces_for_while = required_for_multiline
+resharper_continuous_indent_multiplier = 1
+resharper_continuous_line_indent = none
+resharper_cpp_indent_style = tab
+resharper_cpp_int_align_comments = true
+resharper_cpp_max_line_length = 153
+resharper_cpp_space_after_keywords_in_control_flow_statements = false
+resharper_cpp_type_declaration_braces = end_of_line
+resharper_csharp_blank_lines_around_region = 0
+resharper_csharp_insert_final_newline = false
+resharper_csharp_keep_blank_lines_in_code = 100
+resharper_csharp_keep_blank_lines_in_declarations = 100
+resharper_csharp_max_line_length = 459
+resharper_csharp_wrap_multiple_declaration_style = wrap_if_long
+resharper_csharp_wrap_ternary_expr_style = wrap_if_long
+resharper_default_value_when_type_evident = default_expression
+resharper_default_value_when_type_not_evident = default_literal
+resharper_for_other_types = use_var_when_evident
+resharper_indent_nested_foreach_stmt = true
+resharper_indent_preprocessor_directives = do_not_change
+resharper_indent_preprocessor_if = do_not_change
+resharper_indent_preprocessor_other = do_not_change
+resharper_indent_preprocessor_region = do_not_change
+resharper_int_align_declaration_names = true
+resharper_max_attribute_length_for_same_line = 10000
+resharper_nested_ternary_style = compact
+resharper_object_creation_when_type_evident = explicitly_typed
+resharper_place_accessorholder_attribute_on_same_line = true
+resharper_place_accessor_attribute_on_same_line = false
+resharper_place_expr_method_on_single_line = if_owner_is_single_line
+resharper_place_method_attribute_on_same_line = if_owner_is_single_line
+resharper_place_simple_embedded_statement_on_same_line = false
+resharper_simple_embedded_statement_style = on_single_line
+resharper_space_within_single_line_array_initializer_braces = false
+resharper_toplevel_function_definition_return_type_style = on_single_line
+resharper_use_roslyn_logic_for_evident_types = true
+resharper_wrap_after_expression_lbrace = false
+resharper_wrap_array_initializer_style = wrap_if_long
+resharper_wrap_before_expression_rbrace = false

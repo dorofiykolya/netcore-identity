@@ -1,0 +1,48 @@
+name: Build
+on:
+  workflow_dispatch:
+    inputs:
+jobs:
+  prepare:
+    name: Prepare
+    runs-on: ubuntu-latest
+    outputs:
+      build: ${{ github.run_number }}
+    steps:
+      - run: echo build number ${{ github.run_number }}
+  #--------------------------------------------------------------------
+  #
+  #--------------------------------------------------------------------
+  build_docker_identity:
+    name: Service.Identity
+    runs-on: ubuntu-latest
+    needs: [prepare]
+    steps:
+      #----------------------------------------------------------------
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      #----------------------------------------------------------------
+      - name: Update appsettings.json Version.Build
+        uses: jossef/action-set-json-field@v2
+        with:
+          file: ./src/appsettings.json
+          field: Version.Build
+          value: ${{ needs.prepare.outputs.build }}
+      #----------------------------------------------------------------
+      - run: cat ./src/appsettings.json
+      #----------------------------------------------------------------
+      - uses: mr-smithers-excellent/docker-build-push@v5
+        name: Service.Identity - Build & Push Docker image (Docker Hub)
+        with:
+          image: deusrobots/rms
+          tags: api-${{ needs.prepare.outputs.build }}-identity
+          registry: docker.io
+          directory: src
+          dockerfile: src/Service.Identity/Dockerfile
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+  #--------------------------------------------------------------------
+  #
+  #--------------------------------------------------------------------
