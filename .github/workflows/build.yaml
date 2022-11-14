@@ -36,8 +36,8 @@ jobs:
       - run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
       - name: "🚀 Build"
         working-directory: ./src
-        run: docker build -t netcore-identity:${{ needs.prepare.outputs.build }} -f Service.Identity/Dockerfile .
-      - run: docker push dorofiykolya/netcore-identity:${{ needs.prepare.outputs.build }}
+        run: docker build -t docker.io/dorofiykolya/netcore-identity:${{ needs.prepare.outputs.build }} -f Service.Identity/Dockerfile .
+      - run: docker push docker.io/dorofiykolya/netcore-identity:${{ needs.prepare.outputs.build }}
       #----------------------------------------------------------------
   #--------------------------------------------------------------------
   #
