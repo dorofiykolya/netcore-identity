@@ -8,7 +8,7 @@ WORKDIR /src
 COPY ["Service.Identity/Service.Identity.csproj", "Service.Identity/"]
 RUN dotnet restore "Service.Identity/Service.Identity.csproj"
 COPY . .
-WORKDIR "/src/Identity"
+WORKDIR /src/Service.Identity
 RUN dotnet build "Service.Identity.csproj" -c Release -o /app/build
 
 FROM build AS publish

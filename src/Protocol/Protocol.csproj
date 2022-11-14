@@ -7,17 +7,4 @@
         <RootNamespace>Services.Identity.Protocol</RootNamespace>
     </PropertyGroup>
 
-
-    <ItemGroup>
-        <Compile Include="..\..\protocol\Api\*">
-            <Link>Protocol\Api\*</Link>
-        </Compile>
-        <Compile Include="..\..\protocol\Dto\Users\*">
-            <Link>Protocol\Dto\Users\*</Link>
-        </Compile>
-        <Compile Include="..\..\protocol\Rpc\*">
-            <Link>Protocol\Rpc\*</Link>
-        </Compile>
-    </ItemGroup>
-
 </Project>

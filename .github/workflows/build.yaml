@@ -33,16 +33,12 @@ jobs:
       #----------------------------------------------------------------
       - run: cat ./src/Service.Identity/appsettings.json
       #----------------------------------------------------------------
-      - uses: mr-smithers-excellent/docker-build-push@v5
-        name: Service.Identity - Build & Push Docker image (Docker Hub)
-        with:
-          image: deusrobots/rms
-          tags: api-${{ needs.prepare.outputs.build }}-identity
-          registry: docker.io
-          directory: src
-          dockerfile: src/Service.Identity/Dockerfile
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: "🚀 Build"
+        working-directory: ./src
+        run: docker build -t netcore-identity:${{ needs.prepare.outputs.build }} -f Service.Identity/Dockerfile .
+      - run: docker push dorofiykolya/netcore-identity:${{ needs.prepare.outputs.build }}
+      #----------------------------------------------------------------
   #--------------------------------------------------------------------
   #
   #--------------------------------------------------------------------
