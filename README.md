@@ -32,10 +32,10 @@
 - Jwt:Audience - audience, default audience
 - Jwt:Lifetime - token lifetime, default 00:00:30
 ### Mongo
-- ConnectionString - default mongodb://localhost:27017/
-- DatabaseName - default identity
+- Mongo:ConnectionString - default mongodb://localhost:27017/
+- Mongo:DatabaseName - default identity
 ### Redis
-- ConnectionString - default redis://localhost:6379
+- Redis:ConnectionString - default redis://localhost:6379
 ### Email  (SMTP settings)
 - Email:From - 
 - Email:FromName - 
