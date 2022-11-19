@@ -8,6 +8,7 @@ using Identity.Repositories.Caches;
 using Identity.Services.Emails;
 using Identity.Services.Identities;
 using Identity.Services.Passwords;
+using Identity.Services.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -75,7 +76,7 @@ public class UserEmailController : ControllerBase
     {
         var emailCache = await _userEmailBlock.CheckEmail(request.Email, _invalidPasswordOptions);
 
-        var user = await _userRepository.FindByIdAsync(User.Claims.Id());
+        var user = await _userRepository.FindByIdAsync(User.Claims.Sub());
         if (user == null)
         {
             throw IdentityErrorCode.UserNotFound.Exception();

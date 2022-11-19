@@ -6,6 +6,7 @@ using Identity.Protocol.Dto.Users;
 using Identity.Protocol.Rpc;
 using Identity.Repositories;
 using Identity.Services.Identities;
+using Identity.Services.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,7 +32,7 @@ public class UserInfoController : ControllerBase
     [ProducesResponseType(typeof(StatusCodeResult), (int)HttpStatusCode.BadRequest)]
     public async Task<IActionResult> UserInfo(UserInfoRequest request)
     {
-        string userId = HttpContext.User.Claims.Id();
+        string userId = HttpContext.User.Claims.Sub();
         var user = await _userRepository.FindByIdAsync(userId);
         if (user == null)
         {

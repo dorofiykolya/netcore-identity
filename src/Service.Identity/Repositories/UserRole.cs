@@ -5,7 +5,7 @@ using System;
 namespace Identity.Repositories;
 
 [Serializable]
-public class UserIdentityRole
+public class UserRole
 {
     public string Id { get; set; }
 }

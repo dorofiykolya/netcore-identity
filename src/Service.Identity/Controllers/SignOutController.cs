@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Identity.Protocol.Rpc;
 using Identity.Repositories;
 using Identity.Repositories.Caches;
+using Identity.Services.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,7 +28,7 @@ public class SignOutController : ControllerBase
     [ProducesResponseType(typeof(StatusCodeResult), (int)HttpStatusCode.BadRequest)]
     public async Task<IActionResult> SignOut(SignOutRequest request)
     {
-        string userId = HttpContext.User.Claims.Id();
+        string userId = HttpContext.User.Claims.Sub();
         await _userJwt.Purge(userId);
         return Ok();
     }

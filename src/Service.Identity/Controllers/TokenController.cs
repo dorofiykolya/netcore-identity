@@ -7,6 +7,7 @@ using Identity.Protocol.Rpc;
 using Identity.Repositories;
 using Identity.Repositories.Caches;
 using Identity.Services.Identities;
+using Identity.Services.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -51,7 +52,7 @@ public class TokenController : ControllerBase
     public async Task<IActionResult> RefreshToken(RefreshTokenRequest request)
     {
         var token = _jwtGenerator.Parse(request.RefreshToken);
-        string userId = token.Claims.Id();
+        string userId = token.Claims.Sub();
         string refreshToken = token.Claims.Token();
         string identity = token.Claims.Identity();
         var tokenCache = await _tokenCache.FirstAsync(x => x.UserId == userId);

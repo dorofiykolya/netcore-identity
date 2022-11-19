@@ -13,7 +13,8 @@ public class UserDocument : MongoDocument
 {
     public string? Name { get; set; }
     public IList<UserIdentity> Identities { get; set; } = new List<UserIdentity>();
-    public IList<UserIdentityRole> Roles { get; set; } = new List<UserIdentityRole>();
+    public IList<UserRole> Roles { get; set; } = new List<UserRole>();
+    public IList<string> Scopes { get; set; } = new List<string>();
 
     public class Indexes : IndexBuilder<UserDocument>
     {

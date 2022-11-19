@@ -5,6 +5,7 @@ using Common.Redis;
 using Identity.Repositories;
 using Identity.Repositories.Caches;
 using Identity.Services.Identities;
+using Identity.Services.Users;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Net.Http.Headers;
 
@@ -33,7 +34,7 @@ public class JwtValidatorMiddleware
                 throw IdentityErrorCode.Unauthorized.Exception();
             }
             var info = jwtGenerator.Parse(token);
-            var userId = info.Claims.Id();
+            var userId = info.Claims.Sub();
 
             var user = await tokenRepository.FindByIdAsync(userId);
             if (user == null || user.AccessToken != token)

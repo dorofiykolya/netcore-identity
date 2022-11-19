@@ -5,6 +5,7 @@ using Common.Mongo;
 using Common.Redis;
 using Identity.Repositories;
 using Identity.Repositories.Caches;
+using Identity.Services.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,7 +32,7 @@ public class DeleteUserController : ControllerBase
     [Route("user/delete")]
     public async Task<IActionResult> DeleteUser([FromQuery] string userId)
     {
-        if (User.Claims.IsAdmin() && User.Claims.Id() != userId)
+        if (User.Claims.IsAdmin() && User.Claims.Sub() != userId)
         {
             await _userToken.DeleteAsync(new UserTokenCache
             {
@@ -50,7 +51,7 @@ public class DeleteUserController : ControllerBase
     {
         if (User.Claims.IsAdmin())
         {
-            string currentId = User.Claims.Id();
+            string currentId = User.Claims.Sub();
             IList<UserTokenCache> list = await _userToken.ToListAsync();
             foreach (var token in list)
             {

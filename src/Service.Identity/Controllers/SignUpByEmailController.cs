@@ -9,6 +9,7 @@ using Identity.Repositories.Caches;
 using Identity.Services.Emails;
 using Identity.Services.Identities;
 using Identity.Services.Passwords;
+using Identity.Services.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -78,6 +79,10 @@ public class SignUpByEmailController : ControllerBase
                     Confirmed = false,
                     ValidateCode = validationCode,
                     InvalidCodeCount = 0
+                });
+                document.Roles.Add(new UserRole
+                {
+                    Id = UserRoles.User
                 });
             });
         }

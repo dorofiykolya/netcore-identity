@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Common.Mongo;
 using Identity.Services.Identities;
+using Identity.Services.Users;
 
 namespace Identity.Repositories;
 
@@ -14,8 +15,8 @@ public static class UserDocumentExtensions
     {
         var list = new List<Claim>()
         {
-            new Claim(UserClaims.TypeId, document.Id.ToString()),
-            new Claim(UserClaims.TypeToken, Guid.NewGuid().ToString("N"))
+            new Claim(UserClaimTypes.Subject, document.Id.ToString()),
+            new Claim(UserClaimTypes.Token, Guid.NewGuid().ToString("N"))
         };
         list.AddRange(additional);
         return list.ToArray();
@@ -25,15 +26,19 @@ public static class UserDocumentExtensions
     {
         var claims = new List<Claim>(document.Identities.Count + document.Roles.Count + 2 + additional.Length);
         claims.AddRange(additional);
-        claims.Add(new Claim(UserClaims.TypeId, document.Id.ToString()));
-        claims.Add(new Claim(UserClaims.TypeName, document.Name ?? ""));
+        claims.Add(new Claim(UserClaimTypes.Subject, document.Id.ToString()));
+        claims.Add(new Claim(UserClaimTypes.Name, document.Name ?? ""));
         foreach (var identity in document.Identities)
         {
-            claims.Add(new Claim($"{UserClaims.TypeIdentities}/{identity}", identity.ToString() ?? string.Empty));
+            claims.Add(new Claim($"{UserClaimTypes.Identities}/{identity}", identity.ToString() ?? string.Empty));
         }
         foreach (var role in document.Roles)
         {
-            claims.Add(new Claim(UserClaims.TypeRoles, role.Id));
+            claims.Add(new Claim(UserClaimTypes.Role, role.Id));
+        }
+        foreach (string scope in document.Scopes)
+        {
+            claims.Add(new Claim(UserClaimTypes.Scope, scope));
         }
         return claims.ToArray();
     }

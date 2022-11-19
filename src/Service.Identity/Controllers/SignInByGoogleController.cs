@@ -6,6 +6,7 @@ using Identity.Protocol.Rpc;
 using Identity.Repositories;
 using Identity.Repositories.Caches;
 using Identity.Services.Identities;
+using Identity.Services.Users;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -57,6 +58,10 @@ public class SignInByGoogleController : ControllerBase
                         {
                             Subject = payload.Subject,
                             Email = payload.Email,
+                        });
+                        document.Roles.Add(new UserRole
+                        {
+                            Id = UserRoles.User
                         });
                     });
                 }
