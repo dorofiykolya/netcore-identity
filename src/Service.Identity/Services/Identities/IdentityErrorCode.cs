@@ -20,5 +20,5 @@ public enum IdentityErrorCode
     [Description("Incorect old password")] IncorrectOldPassword = 13,
     [Description("Incorect password")] IncorrectPassword = 14,
     [Description("You are restoring password, check your email")] EmailNeedRestorePasswordState = 15,
-    [Description("Many invalid password, please try later! In {0}")] EmailManyInvalidPassword = 16,
+    [Description("The email was blocked, please try later! In {0}")] EmailBlockedDuringTime = 16,
 }

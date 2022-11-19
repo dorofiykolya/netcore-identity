@@ -7,5 +7,5 @@ namespace Identity.Repositories;
 public class UserGoogleIdentity : UserIdentity
 {
     public override string Identity { get; set; } = Identities.Google;
-    public string Email { get; set; } = null!;
+    public string? Email { get; set; }
 }

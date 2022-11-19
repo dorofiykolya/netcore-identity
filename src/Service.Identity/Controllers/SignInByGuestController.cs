@@ -35,17 +35,18 @@ public class SignInByGuestController : ControllerBase
         var user = await _userRepository.FindByGuestAsync(request.Id);
         if (user == null)
         {
-            user = await _userRepository.CreateUser();
-            user.Name = request.Id;
-            user.Identities.Add(new UserGuestIdentity
+            user = await _userRepository.CreateUser(document =>
             {
-                Subject = request.Id
+                document.Name = request.Id;
+                document.Identities.Add(new UserGuestIdentity
+                {
+                    Subject = request.Id
+                });
+                document.Roles.Add(new UserIdentityRole
+                {
+                    Id = UserRoles.Guest
+                });
             });
-            user.Roles.Add(new UserIdentityRole
-            {
-                Id = UserRoles.Guest
-            });
-            await _userRepository.ReplaceOneAsync(user);
         }
 
         var token = await _userJwt.UpdateTokenWithIdentity(user, Identities.Guest);

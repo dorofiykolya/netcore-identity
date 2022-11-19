@@ -49,15 +49,8 @@ public class SignInByEmailController : ControllerBase
         {
             throw IdentityErrorCode.EmailInvalidFormat.Exception();
         }
-
-        var emailCache = await _userEmailBlock.FindByIdAsync(request.Email);
-        if (emailCache != null)
-        {
-            if (emailCache.InvalidPasswordCount > _invalidPasswordOptions.InvalidCountToBlock)
-            {
-                throw IdentityErrorCode.EmailManyInvalidPassword.Exception(_invalidPasswordOptions.ToBlockTimeHumanReadable());
-            }
-        }
+        
+        var emailCache = await _userEmailBlock.CheckEmail(request.Email, _invalidPasswordOptions);
 
         var user = await _userRepository.FindByEmailAsync(request.Email);
         if (user == null)
@@ -73,19 +66,7 @@ public class SignInByEmailController : ControllerBase
 
         if (email.Password != request.Password)
         {
-            if (emailCache != null)
-            {
-                emailCache.InvalidPasswordCount++;
-                await _userEmailBlock.UpdateAsync(emailCache);
-                await _userEmailBlock.SaveAsync();
-            }
-            else
-            {
-                await _userEmailBlock.InsertAsync(new UserEmailBlockCache
-                {
-                    Email = request.Email, InvalidPasswordCount = 1
-                }, _invalidPasswordOptions.BlockTime);
-            }
+            await _userEmailBlock.IncreaseInvalidCount(request.Email, emailCache, _invalidPasswordOptions);
 
             throw IdentityErrorCode.IncorrectPassword.Exception();
         }

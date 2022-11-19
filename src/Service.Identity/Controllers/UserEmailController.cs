@@ -47,14 +47,7 @@ public class UserEmailController : ControllerBase
     [ProducesResponseType(typeof(StatusCodeResult), (int)HttpStatusCode.BadRequest)]
     public async Task<IActionResult> ForgotPassword(ForgotEmailPasswordRequest request)
     {
-        var emailCache = await _userEmailBlock.FindByIdAsync(request.Email);
-        if (emailCache != null)
-        {
-            if (emailCache.InvalidPasswordCount > _invalidPasswordOptions.InvalidCountToBlock)
-            {
-                throw IdentityErrorCode.EmailManyInvalidPassword.Exception(_invalidPasswordOptions.ToBlockTimeHumanReadable());
-            }
-        }
+        var emailCache = await _userEmailBlock.CheckEmail(request.Email, _invalidPasswordOptions);
 
         var user = await _userRepository.FindByEmailAsync(request.Email);
         if (user == null)
@@ -65,6 +58,7 @@ public class UserEmailController : ControllerBase
         var email = user.Identities.FindEmail(request.Email)!;
         if (!email.Confirmed)
         {
+            await _userEmailBlock.IncreaseInvalidCount(request.Email, emailCache, _invalidPasswordOptions);
             throw IdentityErrorCode.EmailNotConfirmed.Exception();
         }
 
@@ -79,14 +73,8 @@ public class UserEmailController : ControllerBase
     [ProducesResponseType(typeof(StatusCodeResult), (int)HttpStatusCode.BadRequest)]
     public async Task<IActionResult> ChangePassword(ChangeEmailPasswordRequest request)
     {
-        var emailCache = await _userEmailBlock.FindByIdAsync(request.Email);
-        if (emailCache != null)
-        {
-            if (emailCache.InvalidPasswordCount > _invalidPasswordOptions.InvalidCountToBlock)
-            {
-                throw IdentityErrorCode.EmailManyInvalidPassword.Exception(_invalidPasswordOptions.ToBlockTimeHumanReadable());
-            }
-        }
+        var emailCache = await _userEmailBlock.CheckEmail(request.Email, _invalidPasswordOptions);
+
         var user = await _userRepository.FindByIdAsync(User.Claims.Id());
         if (user == null)
         {
@@ -95,23 +83,12 @@ public class UserEmailController : ControllerBase
         var emailIdentity = user.Identities.FindEmail(request.Email);
         if (emailIdentity == null)
         {
+            await _userEmailBlock.IncreaseInvalidCount(request.Email, emailCache, _invalidPasswordOptions);
             throw IdentityErrorCode.IdentityNotFound.Exception();
         }
         if (emailIdentity.Password != request.OldPassword)
         {
-            if (emailCache != null)
-            {
-                emailCache.InvalidPasswordCount++;
-                await _userEmailBlock.UpdateAsync(emailCache);
-                await _userEmailBlock.SaveAsync();
-            }
-            else
-            {
-                await _userEmailBlock.InsertAsync(new UserEmailBlockCache
-                {
-                    Email = request.Email, InvalidPasswordCount = 1
-                }, _invalidPasswordOptions.BlockTime);
-            }
+            await _userEmailBlock.IncreaseInvalidCount(request.Email, emailCache, _invalidPasswordOptions);
             throw IdentityErrorCode.IncorrectOldPassword.Exception();
         }
         var passwordState = await _passwordValidator.ValidateAsync(request.NewPassword);

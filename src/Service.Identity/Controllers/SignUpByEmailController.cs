@@ -2,8 +2,10 @@ using System;
 using System.Net;
 using System.Threading.Tasks;
 using Common.Mongo;
+using Common.Redis;
 using Identity.Protocol.Rpc;
 using Identity.Repositories;
+using Identity.Repositories.Caches;
 using Identity.Services.Emails;
 using Identity.Services.Identities;
 using Identity.Services.Passwords;
@@ -16,21 +18,27 @@ namespace Identity.Controllers;
 public class SignUpByEmailController : ControllerBase
 {
     private readonly IMongoRepository<UserDocument> _userRepository;
+    private readonly ICacheRepository<UserEmailBlockCache> _userEmailBlock;
     private readonly IEmailValidator _emailValidator;
     private readonly IPasswordValidator _passwordValidator;
+    private readonly InvalidPasswordOptions _invalidPasswordOptions;
     private readonly IEmailSender _emailSender;
 
     public SignUpByEmailController(
         IMongoRepository<UserDocument> userRepository,
+        ICacheRepository<UserEmailBlockCache> userEmailBlock,
         IEmailSender emailSender,
         IEmailValidator emailValidator,
-        IPasswordValidator passwordValidator
+        IPasswordValidator passwordValidator,
+        InvalidPasswordOptions invalidPasswordOptions
     )
     {
         _userRepository = userRepository;
+        _userEmailBlock = userEmailBlock;
         _emailSender = emailSender;
         _emailValidator = emailValidator;
         _passwordValidator = passwordValidator;
+        _invalidPasswordOptions = invalidPasswordOptions;
     }
 
     [AllowAnonymous]
@@ -51,6 +59,8 @@ public class SignUpByEmailController : ControllerBase
             throw IdentityErrorCode.EmailInvalidPassword.Exception();
         }
 
+        var emailCache = await _userEmailBlock.CheckEmail(request.Email, _invalidPasswordOptions);
+
         var user = await _userRepository.FindByEmailAsync(request.Email);
 
         string validationCode = new Random().Next(1000, 9999).ToString();
@@ -58,19 +68,18 @@ public class SignUpByEmailController : ControllerBase
         if (user == null)
         {
             await _emailSender.SendAsync(validationCode, request.Email, "email confirmation");
-            user = await _userRepository.CreateUser();
-
-            user.Identities.Add(new UserEmailIdentity
+            await _userRepository.CreateUser(document =>
             {
-                Email = request.Email,
-                Name = request.Name,
-                Password = request.Password,
-                Confirmed = false,
-                ValidateCode = validationCode,
-                InvalidCodeCount = 0
+                document.Name = request.Email.Split('@')[0];
+                document.Identities.Add(new UserEmailIdentity
+                {
+                    Email = request.Email,
+                    Password = request.Password,
+                    Confirmed = false,
+                    ValidateCode = validationCode,
+                    InvalidCodeCount = 0
+                });
             });
-
-            await _userRepository.ReplaceOneAsync(user);
         }
         else
         {
@@ -81,7 +90,6 @@ public class SignUpByEmailController : ControllerBase
                 user.Identities.Add(new UserEmailIdentity
                 {
                     Email = request.Email,
-                    Name = request.Name,
                     Password = request.Password,
                     Confirmed = false,
                     ValidateCode = validationCode,
@@ -95,6 +103,8 @@ public class SignUpByEmailController : ControllerBase
             }
             else if (!email.Confirmed)
             {
+                await _userEmailBlock.IncreaseInvalidCount(request.Email, emailCache, _invalidPasswordOptions);
+
                 await _emailSender.SendAsync(validationCode, email.Email, "email confirmation");
                 email.ValidateCode = validationCode;
                 await _userRepository.ReplaceOneAsync(user);
@@ -115,6 +125,8 @@ public class SignUpByEmailController : ControllerBase
         {
             throw IdentityErrorCode.EmailInvalidFormat.Exception();
         }
+
+        await _userEmailBlock.CheckEmail(request.Email, _invalidPasswordOptions);
 
         var user = await _userRepository.FindByEmailAsync(request.Email);
         if (user == null)

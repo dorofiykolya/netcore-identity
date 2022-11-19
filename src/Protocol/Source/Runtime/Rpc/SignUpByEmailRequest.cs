@@ -9,8 +9,7 @@ namespace Identity.Protocol.Rpc
     public class SignUpByEmailRequest : IIdentityRequest<SignUpByEmailResponse>
     {
         public const string Route = "/sign/up/email";
-
-        public string Name { get; set; }
+        
         public string Email { get; set; }
         public string Password { get; set; }
     }

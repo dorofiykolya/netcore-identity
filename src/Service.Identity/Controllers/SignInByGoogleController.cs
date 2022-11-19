@@ -37,7 +37,11 @@ public class SignInByGoogleController : ControllerBase
     {
         try
         {
-            var payload = await GoogleJsonWebSignature.ValidateAsync(request.GoogleToken, null, true);
+            var payload = await GoogleJsonWebSignature.ValidateAsync(
+                jwt: request.GoogleToken,
+                clock: null,
+                forceGoogleCertRefresh: false
+            );
             if (payload != null && !string.IsNullOrEmpty(payload.Subject))
             {
                 bool isNewUser = false;
@@ -46,13 +50,15 @@ public class SignInByGoogleController : ControllerBase
                 {
                     isNewUser = true;
 
-                    user = await _userRepository.CreateUser();
-                    user.Identities.Add(new UserGoogleIdentity
+                    user = await _userRepository.CreateUser(document =>
                     {
-                        Subject = payload.Subject,
-                        Email = payload.Email,
+                        document.Name = payload.Name ?? payload.GivenName ?? payload.Email ?? "google";
+                        document.Identities.Add(new UserGoogleIdentity
+                        {
+                            Subject = payload.Subject,
+                            Email = payload.Email,
+                        });
                     });
-                    await _userRepository.ReplaceOneAsync(user);
                 }
 
                 var tokens = await _userJwt.UpdateTokenWithIdentity(user, Identities.Google);
