@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Text;
 using Common.Jwt;
 using Common.Mongo;
@@ -63,6 +64,17 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
+    string? major = builder.Configuration["Version:Major"];
+    string? minor = builder.Configuration["Version:Minor"];
+    string? build = builder.Configuration["Version:Build"];
+
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Service.Identity",
+        Version = $"{major}.{minor}.{build}",
+        Description = $"Build version: {build}"
+    });
+
     var jwtSecurityScheme = new OpenApiSecurityScheme
     {
         BearerFormat = "JWT",
