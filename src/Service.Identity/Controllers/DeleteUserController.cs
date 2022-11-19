@@ -33,7 +33,7 @@ public class DeleteUserController : ControllerBase
     {
         if (User.Claims.IsAdmin() && User.Claims.Id() != userId)
         {
-            await _userToken.Collection.DeleteAsync(new UserTokenCache
+            await _userToken.DeleteAsync(new UserTokenCache
             {
                 UserId = userId
             });
@@ -51,12 +51,12 @@ public class DeleteUserController : ControllerBase
         if (User.Claims.IsAdmin())
         {
             string currentId = User.Claims.Id();
-            IList<UserTokenCache> list = await _userToken.Collection.ToListAsync();
+            IList<UserTokenCache> list = await _userToken.ToListAsync();
             foreach (var token in list)
             {
                 if (token.UserId != currentId)
                 {
-                    await _userToken.Collection.DeleteAsync(new UserTokenCache
+                    await _userToken.DeleteAsync(new UserTokenCache
                     {
                         UserId = token.UserId
                     });

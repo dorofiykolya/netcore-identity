@@ -40,19 +40,19 @@ public class UserJwtTokenRepository : IUserJwtTokenRepository
         var refreshClaims = user.GenerateClaimsToRefreshToken(additional);
         var accessToken = _jwtGenerator.GenerateToken(user.ToClaims(additional));
         var refreshToken = _jwtGenerator.GenerateToken(refreshClaims);
-        await _tokenCache.Collection.UpdateAsync(new UserTokenCache
+        await _tokenCache.UpdateAsync(new UserTokenCache
         {
             UserId = user.Id.ToString(),
             AccessToken = accessToken,
             RefreshToken = refreshClaims.Token()
         });
-        await _tokenCache.Collection.SaveAsync();
+        await _tokenCache.SaveAsync();
         return new Tokens(accessToken, refreshToken);
     }
 
     public async Task Purge(string userId)
     {
-        await _tokenCache.Collection.DeleteAsync(new UserTokenCache
+        await _tokenCache.DeleteAsync(new UserTokenCache
         {
             UserId = userId
         });

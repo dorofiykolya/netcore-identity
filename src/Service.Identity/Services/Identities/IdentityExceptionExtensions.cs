@@ -10,9 +10,11 @@ public static class IdentityExceptionExtensions
         throw Exception(code);
     }
 
-    public static IdentityException Exception(this IdentityErrorCode code)
+    public static IdentityException Exception(this IdentityErrorCode code, params object[] arguments)
     {
         var description = code.GetType().GetCustomAttribute<DescriptionAttribute>();
-        return new IdentityException(code, description?.Description ?? code.ToString());
+        var message = description?.Description ?? code.ToString();
+        message = string.Format(message, arguments);
+        return new IdentityException(code, message);
     }
 }

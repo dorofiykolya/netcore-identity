@@ -13,4 +13,5 @@ public class UserEmailIdentity : UserIdentity
     public string ValidateCode { get; set; } = null!;
     public bool Confirmed { get; set; }
     public int InvalidCodeCount { get; set; }
+    public DateTime BlockExp { get; set; }
 }

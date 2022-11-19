@@ -35,7 +35,7 @@ public class JwtValidatorMiddleware
             var info = jwtGenerator.Parse(token);
             var userId = info.Claims.Id();
 
-            var user = await tokenRepository.Collection.FindByIdAsync(userId);
+            var user = await tokenRepository.FindByIdAsync(userId);
             if (user == null || user.AccessToken != token)
             {
                 throw IdentityErrorCode.Unauthorized.Exception();

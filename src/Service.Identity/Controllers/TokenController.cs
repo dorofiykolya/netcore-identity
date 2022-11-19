@@ -54,7 +54,7 @@ public class TokenController : ControllerBase
         string userId = token.Claims.Id();
         string refreshToken = token.Claims.Token();
         var identity = token.Claims.Identity();
-        var tokenCache = await _tokenCache.Collection.FirstAsync(x => x.UserId == userId);
+        var tokenCache = await _tokenCache.FirstAsync(x => x.UserId == userId);
         if (tokenCache == null)
         {
             throw IdentityErrorCode.Unauthorized.Exception();

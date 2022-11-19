@@ -19,4 +19,6 @@ public enum IdentityErrorCode
     [Description("Identity not found")] IdentityNotFound = 12,
     [Description("Incorect old password")] IncorrectOldPassword = 13,
     [Description("Incorect password")] IncorrectPassword = 14,
+    [Description("You are restoring password, check your email")] EmailNeedRestorePasswordState = 15,
+    [Description("Many invalid password, please try later! In {0}")] EmailManyInvalidPassword = 16,
 }

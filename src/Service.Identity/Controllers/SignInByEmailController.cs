@@ -1,12 +1,14 @@
+using System;
 using System.Net;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Common.Mongo;
+using Common.Redis;
 using Identity.Protocol.Rpc;
 using Identity.Repositories;
 using Identity.Repositories.Caches;
 using Identity.Services.Emails;
 using Identity.Services.Identities;
+using Identity.Services.Passwords;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,18 +18,24 @@ namespace Identity.Controllers;
 public class SignInByEmailController : ControllerBase
 {
     private readonly IMongoRepository<UserDocument> _userRepository;
+    private readonly ICacheRepository<UserEmailBlockCache> _userEmailBlock;
     private readonly IUserJwtTokenRepository _userJwt;
     private readonly IEmailValidator _emailValidator;
+    private readonly InvalidPasswordOptions _invalidPasswordOptions;
 
     public SignInByEmailController(
         IMongoRepository<UserDocument> userRepository,
+        ICacheRepository<UserEmailBlockCache> userEmailBlock,
         IUserJwtTokenRepository userJwt,
-        IEmailValidator emailValidator
+        IEmailValidator emailValidator,
+        InvalidPasswordOptions invalidPasswordOptions
     )
     {
         _userRepository = userRepository;
+        _userEmailBlock = userEmailBlock;
         _userJwt = userJwt;
         _emailValidator = emailValidator;
+        _invalidPasswordOptions = invalidPasswordOptions;
     }
 
     [AllowAnonymous]
@@ -41,6 +49,15 @@ public class SignInByEmailController : ControllerBase
         if (!isEmailValid)
         {
             throw IdentityErrorCode.EmailInvalidFormat.Exception();
+        }
+
+        var emailCache = await _userEmailBlock.FindByIdAsync(request.Email);
+        if (emailCache != null)
+        {
+            if (emailCache.InvalidPasswordCount > _invalidPasswordOptions.InvalidCountToBlock)
+            {
+                throw IdentityErrorCode.EmailManyInvalidPassword.Exception(_invalidPasswordOptions.ToBlockTimeHumanReadable());
+            }
         }
 
         var user = await _userRepository.FindByEmailAsync(request.Email);
@@ -57,6 +74,20 @@ public class SignInByEmailController : ControllerBase
 
         if (email?.Password != request.Password)
         {
+            if (emailCache != null)
+            {
+                emailCache.InvalidPasswordCount++;
+                await _userEmailBlock.UpdateAsync(emailCache);
+                await _userEmailBlock.SaveAsync();
+            }
+            else
+            {
+                await _userEmailBlock.InsertAsync(new UserEmailBlockCache
+                {
+                    Email = request.Email, InvalidPasswordCount = 1
+                }, _invalidPasswordOptions.BlockTime);
+            }
+
             throw IdentityErrorCode.IncorrectPassword.Exception();
         }
 

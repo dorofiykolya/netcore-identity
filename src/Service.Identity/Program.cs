@@ -27,6 +27,7 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddEmailSender(builder.Configuration.GetSection("Email"));
     builder.Services.AddPasswordValidator(builder.Configuration.GetSection("Password"));
     builder.Services.AddPasswordGenerator(builder.Configuration.GetSection("Password"));
+    builder.Services.AddInvalidPasswordOptions(builder.Configuration.GetSection("InvalidPassword"));
     builder.Services.AddEmailValidator();
     builder.Services.AddCors(service => service.AddDefaultPolicy(b => b.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()));
     builder.Services.AddAuthorization();
