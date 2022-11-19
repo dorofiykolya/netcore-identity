@@ -1,4 +1,3 @@
-using System;
 using System.Net;
 using System.Threading.Tasks;
 using Common.Mongo;
@@ -72,7 +71,7 @@ public class SignInByEmailController : ControllerBase
             throw IdentityErrorCode.EmailNotConfirmed.Exception();
         }
 
-        if (email?.Password != request.Password)
+        if (email.Password != request.Password)
         {
             if (emailCache != null)
             {

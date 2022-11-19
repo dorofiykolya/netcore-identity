@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Common.Mongo;
 using Identity.Protocol.Rpc;
 using Identity.Repositories;
-using Identity.Services;
 using Identity.Services.Emails;
 using Identity.Services.Identities;
 using Identity.Services.Passwords;

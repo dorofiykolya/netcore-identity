@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Common.Mongo;
 using Common.Mongo.Attributes;
-using Microsoft.AspNetCore.Identity;
 using MongoDB.Driver;
 
 namespace Identity.Repositories;

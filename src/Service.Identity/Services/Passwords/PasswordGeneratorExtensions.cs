@@ -8,7 +8,7 @@ public static class PasswordGeneratorExtensions
 {
     public static void AddPasswordGenerator(this IServiceCollection services, IConfigurationSection configuration)
     {
-        services.AddSingleton<PasswordOptions>(_ => configuration.Get<PasswordOptions>());
+        services.AddSingleton(_ => configuration.Get<PasswordOptions>());
         services.AddSingleton<IPasswordGenerator, PasswordGenerator>();
     }
 }

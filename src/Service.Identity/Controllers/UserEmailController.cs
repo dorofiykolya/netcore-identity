@@ -1,4 +1,3 @@
-using System;
 using System.Net;
 using System.Threading.Tasks;
 using Common.Mongo;
@@ -21,7 +20,6 @@ public class UserEmailController : ControllerBase
     private readonly ICacheRepository<UserEmailBlockCache> _userEmailBlock;
     private readonly IPasswordValidator _passwordValidator;
     private readonly IEmailSender _emailSender;
-    private readonly IPasswordGenerator _passwordGenerator;
     private readonly EmailOptions _emailOptions;
     private readonly InvalidPasswordOptions _invalidPasswordOptions;
 
@@ -30,7 +28,6 @@ public class UserEmailController : ControllerBase
         ICacheRepository<UserEmailBlockCache> userEmailBlock,
         IPasswordValidator passwordValidator,
         IEmailSender emailSender,
-        IPasswordGenerator passwordGenerator,
         EmailOptions emailOptions,
         InvalidPasswordOptions invalidPasswordOptions
     )
@@ -39,7 +36,6 @@ public class UserEmailController : ControllerBase
         _userEmailBlock = userEmailBlock;
         _passwordValidator = passwordValidator;
         _emailSender = emailSender;
-        _passwordGenerator = passwordGenerator;
         _emailOptions = emailOptions;
         _invalidPasswordOptions = invalidPasswordOptions;
     }

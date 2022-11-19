@@ -37,7 +37,7 @@ public class ControllerInspector
                                 {
                                     if (@interface.GetGenericTypeDefinition() == typeof(IIdentityRequest<>))
                                     {
-                                        string methodTemplate = "";
+                                        string methodTemplate;
                                         var methodRoute = methodInfo.GetCustomAttribute<RouteAttribute>();
                                         if (methodRoute != null)
                                         {
@@ -67,8 +67,10 @@ public class ControllerInspector
 
     public class RouteInfo
     {
+        // ReSharper disable UnusedAutoPropertyAccessor.Global
         public string Path { get; set; } = null!;
         public Type RequestType { get; set; } = null!;
         public Type ResponseType { get; set; } = null!;
+        // ReSharper restore UnusedAutoPropertyAccessor.Global
     }
 }

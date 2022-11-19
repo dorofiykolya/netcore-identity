@@ -6,7 +6,7 @@ namespace Identity.Protocol.Rpc
     [Serializable]
     public class TokenValidateRequest : IIdentityRequest<TokenValidateResponse>
     {
-        public const string Route = "token/validate";
+        public const string Route = "token/verify";
     }
 
 }

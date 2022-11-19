@@ -59,7 +59,7 @@ public static class SenderExtensions
 {
     public static void AddEmailSender(this IServiceCollection services, IConfigurationSection section)
     {
-        services.AddSingleton<EmailOptions>(_ => section.Get<EmailOptions>());
+        services.AddSingleton(_ => section.Get<EmailOptions>());
         services.AddScoped<IEmailSender, Sender>();
     }
 }

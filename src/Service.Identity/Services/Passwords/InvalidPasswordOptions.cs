@@ -17,7 +17,7 @@ public static class InvalidPasswordExtensions
 {
     public static void AddInvalidPasswordOptions(this IServiceCollection services, IConfigurationSection section)
     {
-        services.AddSingleton<InvalidPasswordOptions>(_ =>
+        services.AddSingleton(_ =>
         {
             var option = new InvalidPasswordOptions();
             section.Bind(option);

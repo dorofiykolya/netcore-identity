@@ -5,6 +5,7 @@ using System;
 namespace Identity.Services.Emails;
 
 [Serializable]
+// ReSharper disable once InconsistentNaming
 public class EmailOptions
 {
     public string From { get; set; }

@@ -38,7 +38,7 @@ public class TokenController : ControllerBase
     [Route(TokenValidateRequest.Route)]
     [ProducesResponseType(typeof(TokenValidateResponse), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(StatusCodeResult), (int)HttpStatusCode.BadRequest)]
-    public Task<IActionResult> Validate(TokenValidateRequest request)
+    public Task<IActionResult> Verify(TokenValidateRequest request)
     {
         return Task.FromResult<IActionResult>(Ok());
     }
@@ -53,7 +53,7 @@ public class TokenController : ControllerBase
         var token = _jwtGenerator.Parse(request.RefreshToken);
         string userId = token.Claims.Id();
         string refreshToken = token.Claims.Token();
-        var identity = token.Claims.Identity();
+        string identity = token.Claims.Identity();
         var tokenCache = await _tokenCache.FirstAsync(x => x.UserId == userId);
         if (tokenCache == null)
         {
